@@ -1,0 +1,72 @@
+.hex {
+  width: 110px;
+  height: 100px;
+  background-image: url("../gfx/hex.png");
+  background-size: 110px 100px;
+  position: absolute;
+}
+
+.arrow {
+  width: 40px;
+  height: 40px;
+  background-image: url("../gfx/arrow.png");
+  background-size: 40px 40px;
+  position: absolute;
+  top: 30px;
+  left: 35px;
+  transform: rotate(0deg);
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+}
+
+.dirp {
+  position: absolute;
+  top: 45px;
+  left: 50px;
+}
+
+#elements {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+select:nth-child(1) {
+  margin-bottom: 10px;
+}
+
+#elements button {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#showLevel {
+  position: absolute;
+  top: 0;
+  left: 120px;
+  width: 200px;
+  height: 500px;
+  background: lightgrey;
+}
+
+/*-----------style dla hex.html------------------*/
+
+body {
+  overflow: hidden;
+  margin: 0;
+}
+
+/*-----------style dla inputów------------------*/
+.intensity {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.height {
+  position: absolute;
+  top: 30px;
+  left: 0;
+}

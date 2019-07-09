@@ -1,0 +1,768 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Piętnastka</title>
+    <link href="https://fonts.googleapis.com/css?family=Nosifer" rel="stylesheet">
+    <style>
+        body {
+            background: rgb(13, 41, 12)
+        }
+
+        #image {
+            margin: 0 auto;
+            position: absolute;
+            outline: 2px solid rgb(221, 36, 36);
+
+        }
+
+        #winnerBox {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.5);
+            font-family: 'Nosifer', cursive;
+        }
+
+        #content {
+            font-size: 30px;
+            color: white;
+            font-weight: 900;
+            font-family: 'Nosifer', cursive;
+            text-align: center;
+        }
+
+        #scoreboard {
+            background: white;
+            border: 5px solid black;
+            position: absolute;
+            left: 50px;
+            top: 300px;
+        }
+
+        #slider {
+            display: flex;
+            justify-content: center;
+        }
+
+        #scoreboard th {
+            border: 2px solid black;
+            padding: 10px;
+        }
+
+        #scoreboard td {
+            padding: 5px;
+        }
+
+        #send {
+            margin: auto;
+            font-family: 'Nosifer', cursive;
+            font-size: 30px;
+            background: rgb(170, 0, 0);
+            border: 5px solid black;
+        }
+
+        #winnerForm {
+            width: 300px;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function ready() {
+            var boxForSlider = document.createElement("div")
+            boxForSlider.setAttribute("id", "slider")
+            document.body.appendChild(boxForSlider)
+
+            ///////////////////////////lewa strzałka///////////////
+            var leftArrow = document.createElement("div")
+            leftArrow.style.backgroundImage = "url(leftArrow.png)"
+            leftArrow.setAttribute("id", "leftArrow")
+            leftArrow.style.width = "150px"
+            leftArrow.style.height = "150px"
+            leftArrow.style.backgroundSize = "150px 150px"
+            leftArrow.style.cursor = "pointer"
+            boxForSlider.appendChild(leftArrow)
+            function scrollLeft() {
+                elmnt = document.getElementById("select")
+                scrolled = parseInt(elmnt.scrollLeft, 10)
+                toBeScrolled = scrolled - 150
+                numberOfImage--
+                function scroll() {
+                    leftArrow.removeEventListener("click", scrollLeft, true)
+                    if (scrolled > toBeScrolled) {
+                        scrolled -= 5
+                        elmnt.scrollLeft = scrolled
+                        if (scrolled == 0){
+                            elmnt.scrollLeft = 450
+                            numberOfImage = 4
+                        }
+                    } else {
+                        leftArrow.addEventListener("click", scrollLeft, true)
+                        clearInterval(myInterval)
+                    }
+                }
+                let myInterval = setInterval(scroll, 15)
+            }
+            leftArrow.addEventListener("click", scrollLeft, true)
+            ///////////////////////////////////////////////////////
+
+            /////////////////////obrazek do wybierania////////////////
+            var numberOfImage = 2
+            var smallBoxToSelect = document.createElement("div")
+            smallBoxToSelect.setAttribute("id", "select")
+            smallBoxToSelect.style.width = "150px"
+            smallBoxToSelect.style.height = "150px"
+            smallBoxToSelect.style.overflow = "auto"
+            smallBoxToSelect.style.overflow = "hidden"
+            boxForSlider.appendChild(smallBoxToSelect)
+            var contentOfImageToSelect = document.createElement("div")
+            contentOfImageToSelect.setAttribute("id", "selectContent")
+            contentOfImageToSelect.style.width = "750px"
+            contentOfImageToSelect.style.height = "150px"
+            smallBoxToSelect.appendChild(contentOfImageToSelect)
+            for (let i = 1; i < 6; i++) {
+                let imageToSelect = document.createElement("div")
+                imageToSelect.style.width = "150px"
+                imageToSelect.style.height = "150px"
+                imageToSelect.style.backgroundImage = "url(" + i + ".jpg)"
+                imageToSelect.style.backgroundSize = "150px 150px"
+                imageToSelect.style.display = "inline-block"
+                contentOfImageToSelect.appendChild(imageToSelect)
+            }
+
+            ///////////////////////////reset okna///////////////////
+            window.onload = function () {
+                document.getElementById("select").scrollLeft = 150
+            }
+            ///////////////////////////reset okna///////////////////
+            ////////////////////////////////////////////////////////
+
+            ///////////////////////////prawa strzałka///////////////
+            var rightArrow = document.createElement("div")
+            rightArrow.setAttribute("id", "rightArrow")
+            rightArrow.style.backgroundImage = "url(rightArrow.png)"
+            rightArrow.style.width = "150px"
+            rightArrow.style.height = "150px"
+            rightArrow.style.backgroundSize = "150px 150px"
+            rightArrow.style.cursor = "pointer"
+            boxForSlider.appendChild(rightArrow)
+
+            function scrollRight() {
+                elmnt = document.getElementById("select")
+                scrolled = parseInt(elmnt.scrollLeft, 10)
+                toBeScrolled = scrolled + 150
+                numberOfImage++
+                function scroll() {
+                    rightArrow.removeEventListener("click", scrollRight, true)
+                    if (scrolled < toBeScrolled) {
+                        scrolled += 5
+                        elmnt.scrollLeft = scrolled
+                        if (scrolled == 600) {
+                            elmnt.scrollLeft = 150
+                            numberOfImage = 2
+                        }
+                    } else {
+                        rightArrow.addEventListener("click", scrollRight, true)
+                        clearInterval(myInterval)
+                    }
+                }
+                let myInterval = setInterval(scroll, 15)
+            }
+            rightArrow.addEventListener("click", scrollRight, true)
+            ///////////////////////////////////////////////////////
+
+            ////////////////////scoreboard///////////////////////////
+            var scoreBoard = document.createElement("table")
+            scoreBoard.setAttribute("id", "scoreboard")
+            scoreBoard.innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników</th></tr>"
+            document.body.appendChild(scoreBoard)
+            function addResults() {
+                if (document.cookie != "") {
+                    results = document.cookie.split(";")
+                    size = 1
+                    convertedResults = []
+                    while (results.length > 0) {
+                        array = results.splice(0, size).toString().split("=")
+                        twoArrays = array[1].split("/")
+                        result = { nickname: array[0], time: parseInt(array[1].split(':').join("").split(".").join("")), stringTime: twoArrays[0], mode: twoArrays[1] }
+                        convertedResults.push(result)
+                    }
+                    convertedResults.sort(function (a, b) {
+                        return a.time - b.time
+                    })
+                    console.log(convertedResults)
+                    var convertedResults3x3 = []
+                    var convertedResults4x4 = []
+                    var convertedResults5x5 = []
+                    var convertedResults6x6 = []
+                    for (let i = 0; i < convertedResults.length; i++) {
+                        if (convertedResults[i].mode == "3") {
+                            convertedResults3x3.push(convertedResults[i])
+                        }
+                        if (convertedResults[i].mode == "4") {
+                            convertedResults4x4.push(convertedResults[i])
+                        }
+                        if (convertedResults[i].mode == "5") {
+                            convertedResults5x5.push(convertedResults[i])
+                        }
+                        if (convertedResults[i].mode == "6") {
+                            convertedResults6x6.push(convertedResults[i])
+                        }
+                    }
+                    convertedResults3x3 = convertedResults3x3.slice(0, 10)
+                    convertedResults4x4 = convertedResults4x4.slice(0, 10)
+                    convertedResults5x5 = convertedResults5x5.slice(0, 10)
+                    convertedResults6x6 = convertedResults6x6.slice(0, 10)
+                    if (convertedResults3x3 != undefined) {
+                        if (parts == 3) {
+                            for (let i = 0; i < convertedResults3x3.length; i++) {
+                                document.getElementById("scoreboard").innerHTML += "<tr><td>" + convertedResults3x3[i].nickname + "</td><td>" + convertedResults3x3[i].stringTime + "</td<tr>"
+                            }
+                        }
+                    }
+                    if (convertedResults4x4 != undefined) {
+                        if (parts == 4) {
+                            for (let i = 0; i < convertedResults4x4.length; i++) {
+                                document.getElementById("scoreboard").innerHTML += "<tr><td>" + convertedResults4x4[i].nickname + "</td><td>" + convertedResults4x4[i].stringTime + "</td<tr>"
+                            }
+                        }
+                    }
+                    if (convertedResults5x5 != undefined) {
+                        if (parts == 5) {
+                            for (let i = 0; i < convertedResults5x5.length; i++) {
+                                document.getElementById("scoreboard").innerHTML += "<tr><td>" + convertedResults5x5[i].nickname + "</td><td>" + convertedResults5x5[i].stringTime + "</td<tr>"
+                            }
+                        }
+                    }
+                    if (convertedResults6x6 != undefined) {
+                        if (parts == 6) {
+                            for (let i = 0; i < convertedResults6x6.length; i++) {
+                                document.getElementById("scoreboard").innerHTML += "<tr><td>" + convertedResults6x6[i].nickname + "</td><td>" + convertedResults6x6[i].stringTime + "</td<tr>"
+                            }
+                        }
+                    }
+                }
+            }
+            ////////////////////////////////////////////////////////
+
+            /////////////////////////buttony/////////////////////////
+            var boxForInputs = document.createElement("div")
+            boxForInputs.style.display = "flex"
+            boxForInputs.style.marginTop = "20px"
+            boxForInputs.style.marginBottom = "20px"
+            boxForInputs.style.alignItems = "center"
+            boxForInputs.style.justifyContent = "center"
+            document.body.appendChild(boxForInputs)
+            var sizes = ["3 x 3", "4 x 4", "5 x 5", "6 x 6"]
+            var inputId = 3
+            for (let i = 0; i < 4; i++) {
+                var input = document.createElement("input")
+                input.type = "button"
+                input.setAttribute("id", inputId)
+                inputId++
+                input.value = sizes[i]
+                input.style.background = "rgb(62,14,14)"
+                input.style.fontSize = "30px"
+                input.style.display = "inline-block"
+                input.style.width = "100px"
+                input.style.height = "50px"
+                input.style.border = "2px solid rgb(2,0,0)"
+                input.style.borderRadius = "20px"
+                input.style.marginRight = "5px"
+                boxForInputs.appendChild(input)
+                input.addEventListener("mouseenter", function () {
+                    this.style.cursor = "pointer"
+                    this.style.background = "rgb(221,36,36)"
+                })
+                input.addEventListener("mouseleave", function () {
+                    this.style.background = "rgb(62,14,14)"
+                })
+
+                var doneSlicing = false
+
+                input.addEventListener("click", function () {
+                    if (doneSlicing) {
+                        howManyTimes = 0
+                        clearInterval(startScramble)
+                        if (doneScrambling) {
+                            stopTimer()
+                            zeroTimer()
+                        }
+                        var removeElements = document.getElementById("image")
+                        mainImage.style.backgroundImage = "url(" + numberOfImage + ".jpg)"
+                        while (removeElements.firstChild) {
+                            removeElements.removeChild(removeElements.firstChild)
+                        }
+
+                    } else {
+                        var boxForImage = document.createElement("div")
+                        boxForImage.style.height = "600px"
+                        boxForImage.style.display = "flex"
+                        boxForImage.style.justifyContent = "center"
+                        document.body.appendChild(boxForImage)
+                        mainImage = document.createElement('div')
+                        mainImage.setAttribute("id", "image")
+                        boxForImage.appendChild(mainImage)
+                        mainImage.style.backgroundImage = "url(" + numberOfImage + ".jpg)"
+                        mainImage.style.width = "600px"
+                        mainImage.style.height = "600px"
+                        mainImage.style.display = "flex"
+                        mainImage.style.flexWrap = "wrap"
+                        mainImage.style.backgroundSize = "600px 600px"
+                        width = mainImage.offsetWidth
+                        height = mainImage.offsetHeight
+                    }
+                    correctPositions = []
+                    parts = this.id
+                    if (parts == "3") {
+                        document.getElementById("scoreboard").innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników 3x3</th></tr>"
+                    } else if (parts == "4") {
+                        document.getElementById("scoreboard").innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników 4x4</th></tr>"
+                    } else if (parts == "5") {
+                        document.getElementById("scoreboard").innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników 5x5</th></tr>"
+                    } else if (parts == "6") {
+                        document.getElementById("scoreboard").innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników 6x6</th></tr>"
+                    }
+                    addResults()
+                    slice(parts)
+                    function slice(N) {
+                        positionId = 1
+                        var left = 0, top = 0
+                        for (let i = 0; i < N; i++) {
+                            for (let j = 0; j < N; j++) {
+                                var imageElement = document.createElement('div')
+                                imageElement.classList.add(positionId)
+                                positionId++
+                                newWidth = Math.floor(width / N)
+                                newHeight = Math.floor(height / N)
+                                imageElement.style.width = newWidth + "px"
+                                imageElement.style.height = newHeight + "px"
+                                imageElement.style.backgroundSize = "600px 600px"
+                                imageElement.style.backgroundPosition = "-" + left + "px" + " " + "-" + top + "px"
+                                imageElement.style.backgroundImage = "inherit"
+                                if (i == N - 1 && j == N - 1) {
+                                    imageElement.style.backgroundImage = "url(Blank.jpg)"
+                                    imageElement.classList.add("blank")
+                                }
+                                mainImage.appendChild(imageElement)
+                                left += newHeight
+                                correctPositions.push({
+                                    width: imageElement.style.backgroundPosition.split(" ")[0],
+                                    height: imageElement.style.backgroundPosition.split(" ")[1]
+                                })
+                            }
+                            top += newHeight
+                            left = 0
+                        }
+                        doneSlicing = true
+                    }
+                    //console.clear()
+                    startScramble = setInterval(scramble, 10)
+                })
+            }
+
+            /////////////////////////buttony/////////////////////////
+
+            ////////////////////////timer///////////////////////////
+
+            var boxForTimer = document.createElement("div")
+            boxForTimer.setAttribute("id", "boxForTimer")
+            boxForTimer.style.display = "flex"
+            boxForTimer.style.justifyContent = "center"
+            boxForTimer.style.marginBottom = "20px"
+
+            zeroTimer()
+
+            document.body.appendChild(boxForTimer)
+
+            function refreshTimer(period) {
+                images = document.getElementById("boxForTimer").children
+                for (let i = 0; i < images.length; i++) {
+                    switch (period[i]) {
+                        case '0':
+                            images[i].src = "./cyferki/c0.gif"
+                            break;
+                        case '1':
+                            images[i].src = "./cyferki/c1.gif"
+                            break;
+                        case '2':
+                            images[i].src = "./cyferki/c2.gif"
+                            break;
+                        case '3':
+                            images[i].src = "./cyferki/c3.gif"
+                            break;
+                        case '4':
+                            images[i].src = "./cyferki/c4.gif"
+                            break;
+                        case '5':
+                            images[i].src = "./cyferki/c5.gif"
+                            break;
+                        case '6':
+                            images[i].src = "./cyferki/c6.gif"
+                            break
+                        case '7':
+                            images[i].src = "./cyferki/c7.gif"
+                            break
+                        case '8':
+                            images[i].src = "./cyferki/c8.gif"
+                            break
+                        case '9':
+                            images[i].src = "./cyferki/c9.gif"
+                            break
+                        case ':':
+                            images[i].src = "./cyferki/colon.gif"
+                            break
+                        case '.':
+                            images[i].src = "./cyferki/dot.gif"
+                            break
+                    }
+                }
+            }
+
+            function graphicalTimer(period) {
+                time = ""
+                for (let i = 0; i < period.length; i++) {
+                    switch (period[i]) {
+                        case '0':
+                            time += "<img src='./cyferki/c0.gif'>"
+                            break;
+                        case '1':
+                            time += "<img src='./cyferki/c1.gif'>"
+                            break;
+                        case '2':
+                            time += "<img src='./cyferki/c2.gif'>"
+                            break;
+                        case '3':
+                            time += "<img src='./cyferki/c3.gif'>"
+                            break;
+                        case '4':
+                            time += "<img src='./cyferki/c4.gif'>"
+                            break;
+                        case '5':
+                            time += "<img src='./cyferki/c5.gif'>"
+                            break;
+                        case '6':
+                            time += "<img src='./cyferki/c6.gif'>"
+                            break
+                        case '7':
+                            time += "<img src='./cyferki/c7.gif'>"
+                            break
+                        case '8':
+                            time += "<img src='./cyferki/c8.gif'>"
+                            break
+                        case '9':
+                            time += "<img src='./cyferki/c9.gif'>"
+                            break
+                        case ':':
+                            time += "<img src='./cyferki/colon.gif'>"
+                            break
+                        case '.':
+                            time += "<img src='./cyferki/dot.gif'>"
+                            break
+                    }
+                }
+                boxForTimer.innerHTML = time
+            }
+
+            function setTime() {
+                startingDate = new Date()
+            }
+
+            function zeroTimer() {
+                startingDate = new Date(0).toJSON().slice(11, 23)
+                graphicalTimer(startingDate)
+            }
+
+            function timer() {
+                currentDate = new Date()
+                continuance = currentDate - startingDate
+                continuance = new Date(continuance)
+                //console.log("Upłynęło:" + continuance)
+                continuance = continuance.toJSON().slice(11, 23)
+                //boxForTimer.innerHTML = continuance
+                refreshTimer(continuance)
+            }
+
+            function startTimer() {
+                myTimer = setInterval(timer, 50)
+            }
+
+            function stopTimer() {
+                console.log("Zatrzymuję timer.")
+                clearInterval(myTimer)
+            }
+
+
+            ////////////////////////timer///////////////////////////
+
+
+            howManyTimes = 0
+            var rememberedPosition
+            var doneScrambling = false
+            function scramble() {
+                parts = parseInt(parts)
+                // if (howManyTimes < 1) {
+                    if (howManyTimes < Math.pow(parts, 2) * 10) {
+                    //console.log(howManyTimes, "done")
+                    var emptyElement = document.getElementsByClassName("blank")[0]
+                    var positionOfBlank = parseInt(emptyElement.classList[0])
+                    //console.log("------------------------------------------------------------------")
+                    //console.log("Pozycja pustego:" + positionOfBlank)
+                    //console.log(emptyElement)
+                    var possiblePositions = [positionOfBlank - 1, positionOfBlank + 1, positionOfBlank - parts, positionOfBlank + parts]
+                    //console.log("Możliwe pozycje" + possiblePositions)
+                    var positionOfFound
+                    var leave = false
+                    while (!leave) {
+                        //console.log("Nie spełniono warunku.")
+                        positionOfFound = possiblePositions[Math.floor((Math.random() * possiblePositions.length) + 0)]
+                        leave = true
+                        //console.log("losuje nowy")
+                        //console.log("Watość znalezionego(positionOfFound):" + positionOfFound)
+                        if (positionOfFound == rememberedPosition) leave = false
+                        if (positionOfFound <= 0 || positionOfFound > Math.pow(parts, 2)) {
+                            //console.log("Za duże lub za małe")
+                            leave = false
+                        }
+                        if (positionOfFound == (positionOfBlank - 1)) {
+                            //console.log("Krok w tył")
+                            if (positionOfFound % parts == 0) {
+                                //console.log("dzieli się modulo.")
+                                leave = false
+                            }
+                        }
+                        if (positionOfFound == (positionOfBlank + 1)) {
+                            //console.log("Krok w przód")
+                            if (positionOfFound % parts == 1) {
+                                //console.log("dzieli się modulo.")
+                                leave = false
+                            }
+                        }
+                    }
+                    rememberedPosition = positionOfBlank
+                    var foundElement = document.getElementsByClassName(positionOfFound)[0]
+                    /////////////////edycja styli//////////////////////////////////////
+                    //emptyElement.style.backgroundPosition = positions[positionOfFound - 1].width + " " + positions[positionOfFound - 1].height
+                    var firstPositionOfEmpty = emptyElement.style.backgroundPosition.split(" ")[0]
+                    var secondPositionOfEmpty = emptyElement.style.backgroundPosition.split(" ")[1]
+                    emptyElement.style.backgroundPosition = foundElement.style.backgroundPosition.split(" ")[0] + " " + foundElement.style.backgroundPosition.split(" ")[1]
+                    emptyElement.style.backgroundImage = "inherit"
+                    emptyElement.classList.remove("blank")
+
+                    //foundElement.style.backgroundPosition = positions[positionOfBlank - 1].width + " " + positions[positionOfBlank - 1].height
+                    foundElement.style.backgroundPosition = firstPositionOfEmpty + " " + secondPositionOfEmpty
+                    foundElement.style.backgroundImage = "url(Blank.jpg)"
+                    foundElement.classList.add("blank")
+                    //////////////////////////////////////////////////////////////////
+                    howManyTimes++
+                } else {
+                    doneScrambling = true
+                    clearInterval(startScramble)
+                    dispose()
+                    setTime()
+                    console.log("Włączam timer.")
+                    startTimer()///włączenie timera
+                }
+            }
+
+            function dispose() {
+                var elements = document.getElementById("image").children
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].addEventListener("click", click, true)
+                }
+                var toMove = ""
+                function click() {
+
+                    var blank = document.getElementsByClassName("blank")[0]
+
+                    toMove = parseInt(blank.classList[0])
+                    //console.log("Do ruszenia:" + toMove)
+
+                    if (!this.classList.contains("blank")) {
+                        toBeChanged = parseInt(this.classList[0])
+                        possiblePositions = [toBeChanged - 1, toBeChanged + 1, toBeChanged - parts, toBeChanged + parts]
+                        for (let i = 0; i < possiblePositions.length; i++) {
+                            if (possiblePositions[i] <= 0 || possiblePositions[i] > Math.pow(parts, 2)) {
+                                delete possiblePositions[i]
+                            }
+                            if (possiblePositions[i] == toBeChanged - 1) {
+                                if (possiblePositions[i] % parts == 0) {
+                                    delete possiblePositions[i]
+                                }
+                            }
+                            if (possiblePositions[i] == toBeChanged + 1) {
+                                if (possiblePositions[i] % parts == 1) {
+                                    delete possiblePositions[i]
+                                }
+                            }
+                        }
+                        //console.log(toBeChanged, possiblePositions)
+                        if (possiblePositions.includes(toMove)) {
+                            //console.log(toBeChanged, toMove)
+                            var elementtoMove = document.getElementsByClassName([toBeChanged])[0]
+                            var emptyElement = document.getElementsByClassName([toMove])[0]
+
+                            emptyBackground = emptyElement.style.backgroundPosition
+                            filledBackground = elementtoMove.style.backgroundPosition
+                            //console.log(emptyBackground, filledBackground)
+
+                            emptyElement.style.backgroundPosition = filledBackground
+                            emptyElement.style.backgroundImage = "inherit"
+                            emptyElement.classList.remove("blank")
+
+                            elementtoMove.style.backgroundPosition = emptyBackground
+                            elementtoMove.style.backgroundImage = "url(Blank.jpg)"
+                            elementtoMove.classList.add("blank")
+
+                            //console.log(correctPositions)
+                            positionsAfterChange = []
+                            for (let i = 0; i < elements.length; i++) {
+                                positionsAfterChange.push({
+                                    width: elements[i].style.backgroundPosition.split(" ")[0],
+                                    height: elements[i].style.backgroundPosition.split(" ")[1]
+                                })
+                            }
+                            //console.log(positionsAfterChange)
+
+                            function winner() {
+                                console.log("Poprawne:")
+                                console.log(correctPositions)
+                                console.log("Po zmianie:")
+                                console.log(positionsAfterChange)
+                                same = true
+                                for (let i = 0; i < correctPositions.length; i++) {
+                                    if (correctPositions[i].width != positionsAfterChange[i].width || correctPositions[i].height != positionsAfterChange[i].height) {
+                                        same = false
+                                        break
+                                    }
+                                }
+                                if (same) {
+                                    return true
+                                } else {
+                                    return false
+                                }
+                            }
+
+                            if (winner()) {
+                                console.log("Wygrana.")
+                                stopTimer()
+                                element = document.createElement("div")
+                                element.setAttribute("id", "winnerBox")
+                                content = document.createElement("p")
+                                content.setAttribute("id", "content")
+                                content.innerHTML = "Wygrana! Twój wynik to:" + " " + continuance
+                                yourNickname = document.createElement("form")
+                                yourNickname.setAttribute("id", "winnerForm")
+                                yourNickname.style.fontFamily = "Nosifer', cursive"
+                                yourNickname.innerHTML = "Nickname: <input id=\"result\" type=\"text\" name=\"Nickname\">\
+                                <input id=\"send\" type=\"submit\" value=\"Wyślij\">"
+                                element.appendChild(content)
+                                element.appendChild(yourNickname)
+                                document.getElementById("image").appendChild(element)
+                                refreshResults()
+                                function refreshResults() {
+                                    submit = document.getElementById("send")
+                                    submit.addEventListener("mouseenter", function () {
+                                        this.style.background = "rgb(160, 0, 0)"
+                                    })
+                                    submit.addEventListener("mouseleave", function () {
+                                        this.style.background = "rgb(180, 0, 0)"
+                                    })
+                                    submit.addEventListener("click", function (e) {
+                                        e.preventDefault()
+                                        resultInput = document.getElementById("result")
+                                        // date = new Date()
+                                        // date.setTime(date.getTime() + (730 * 24 * 60 * 60 * 1000))
+                                        // expires = "expires=" + date.toUTCString()
+                                        document.cookie = resultInput.value + "=" + continuance + "/" + parts
+                                        // + ";" + expires
+                                        results = document.cookie.split(";")
+                                        size = 1
+                                        convertedResults = []
+                                        while (results.length > 0) {
+                                            array = results.splice(0, size).toString().split("=")
+                                            twoArrays = array[1].split("/")
+                                            result = { nickname: array[0], time: parseInt(array[1].split(':').join("").split(".").join("")), stringTime: twoArrays[0], mode: twoArrays[1] }
+                                            convertedResults.push(result)
+                                        }
+                                        convertedResults.sort(function (a, b) {
+                                            return a.time - b.time
+                                        })
+                                        console.log(convertedResults)
+                                        var convertedResults3x3 = []
+                                        var convertedResults4x4 = []
+                                        var convertedResults5x5 = []
+                                        var convertedResults6x6 = []
+                                        for (let i = 0; i < convertedResults.length; i++) {
+                                            if (convertedResults[i].mode == "3") {
+                                                convertedResults3x3.push(convertedResults[i])
+                                            }
+                                            if (convertedResults[i].mode == "4") {
+                                                convertedResults4x4.push(convertedResults[i])
+                                            }
+                                            if (convertedResults[i].mode == "5") {
+                                                convertedResults5x5.push(convertedResults[i])
+                                            }
+                                            if (convertedResults[i].mode == "6") {
+                                                convertedResults6x6.push(convertedResults[i])
+                                            }
+                                        }
+                                        convertedResults3x3 = convertedResults3x3.slice(0, 10)
+                                        convertedResults4x4 = convertedResults4x4.slice(0, 10)
+                                        convertedResults5x5 = convertedResults5x5.slice(0, 10)
+                                        convertedResults6x6 = convertedResults6x6.slice(0, 10)
+                                        if (parts == 3) {
+                                            document.getElementById("scoreboard").innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników 3x3</th></tr>"
+                                            for (let i = 0; i < convertedResults3x3.length; i++) {
+                                                document.getElementById("scoreboard").innerHTML += "<tr><td>" + convertedResults3x3[i].nickname + "</td><td>" + convertedResults3x3[i].stringTime + "</td<tr>"
+                                            }
+                                        }
+                                        if (parts == 4) {
+                                            document.getElementById("scoreboard").innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników 4x4</th></tr>"
+                                            for (let i = 0; i < convertedResults4x4.length; i++) {
+                                                document.getElementById("scoreboard").innerHTML += "<tr><td>" + convertedResults4x4[i].nickname + "</td><td>" + convertedResults4x4[i].stringTime + "</td<tr>"
+                                            }
+                                        }
+                                        if (parts == 5) {
+                                            document.getElementById("scoreboard").innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników 5x5</th></tr>"
+                                            for (let i = 0; i < convertedResults5x5.length; i++) {
+                                                document.getElementById("scoreboard").innerHTML += "<tr><td>" + convertedResults5x5[i].nickname + "</td><td>" + convertedResults5x5[i].stringTime + "</td<tr>"
+                                            }
+                                        }
+                                        if (parts == 6) {
+                                            document.getElementById("scoreboard").innerHTML = "<tr><th colspan=\"2\" style=\"text-align:center;background:rgb(170, 0, 0)\">Tabela wyników 6x6</th></tr>"
+                                            for (let i = 0; i < convertedResults6x6.length; i++) {
+                                                document.getElementById("scoreboard").innerHTML += "<tr><td>" + convertedResults6x6[i].nickname + "</td><td>" + convertedResults6x6[i].stringTime + "</td<tr>"
+                                            }
+                                        }
+                                        submit.remove()
+                                        statement = document.createElement("p")
+                                        statement.innerHTML = "Dziękujemy za przesłanie wyniku."
+                                        statement.style.color = "rgb(180, 0, 0)"
+                                        statement.style.textAlign = "center"
+                                        document.getElementById("winnerBox").appendChild(statement)
+                                    })
+                                }
+                            } else {
+                                console.log("Tablice są niezgodne.")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        document.addEventListener("DOMContentLoaded", ready)
+    </script>
+
+</head>
+
+<body>
+</body>
+
+</html>

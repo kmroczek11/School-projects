@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dratewka</title>
+    <style>
+        @font-face {
+            font-family: 'Dratewka';
+            src: url('Materials/fonts/PressStart2P.ttf');
+        }
+
+        body {
+            background: black;
+        }
+
+        #image {
+            width: 800px;
+            height: 400px;
+        }
+
+        #kompas {
+            position: absolute;
+            left: 900px;
+            top: 100px;
+            width: 400px;
+            height: 400px;
+            background-size: 370px 370px;
+            background-position: center;
+        }
+
+        #kompas p {
+            color: white;
+        }
+
+        p {
+            font-family: 'Dratewka';
+            font-size: 30px;
+            color: rgb(80, 80, 80);
+        }
+    </style>
+    <script src="locations.js"></script>
+    <script src="items.js"></script>
+    <script src="itemFunctions.js"></script>
+    <script src="animations.js"></script>
+    <script src="go.js"></script>
+    <script src="take.js"></script>
+    <script src="drop.js"></script>
+    <script src="use.js"></script>
+    <script>
+        function ready() {
+            function Location(y, x, description, image, color, directions) {
+                this.y = y
+                this.x = x
+                this.description = description
+                this.image = image
+                this.color = color
+                this.directions = directions
+                this.items = []
+            }
+
+            function wordCount(str) {
+                return str.split(" ").length
+            }
+
+            game = {
+                playerPositionY: 3,
+                playerPositionX: 6,
+                board: [],
+                hand: [],
+                ok: 0,
+                died: false,
+
+                addPositions: function () {
+                    for (var i = 0; i < 6; i++) {
+                        game.board[i] = [];
+                    }
+                    counter = 0
+                    for (let i = 0; i < 6; i++)
+                        for (let j = 0; j < 7; j++) {
+                            game.board[i][j] = new Location(gameLocations[counter].y, gameLocations[counter].x, gameLocations[counter].descr, gameLocations[counter].img, gameLocations[counter].clr, gameLocations[counter].drc)
+                            counter++
+                        }
+                },
+
+                setPosition: function (positionY, positionX) {
+                    currentPosition = game.board[positionY][positionX]
+                    this.init()
+                },
+
+                enterClick: function (text) {
+                    var entered = text
+                    console.log(entered)
+                    if (wordCount(entered) > 1) {
+                        commands = entered.split(" ")
+                        console.log(commands)
+                        var item = ""
+                        for (let i = 1; i < commands.length; i++) {
+                            item += commands[i]
+                            if (commands.length > 2) {
+                                item += " "
+                            }
+                        }
+                        console.log("Przedmiot " + item)
+                        switch (commands[0]) {
+                            case "TAKE":
+                            case "T":
+                                take(item)
+                                break
+                            case "DROP":
+                            case "D":
+                                drop(item)
+                                break
+                            case "USE":
+                            case "U":
+                                use(item)
+                                break
+                        }
+                    } else {
+                        switch (entered) {
+                            case "NORTH":
+                            case "N":
+                                go("NORTH")
+                                break
+                            case "SOUTH":
+                            case "S":
+                                go("SOUTH")
+                                break
+                            case "EAST":
+                            case "E":
+                                go("EAST")
+                                break
+                            case "WEST":
+                            case "W":
+                                go("WEST")
+                                break
+                            case "V":
+                            case "VOCABULARY":
+                                this.vocabulary()
+                                break
+                            case "G":
+                            case "GOSSIPS":
+                                this.gossips()
+                                break
+                        }
+                    }
+                },
+
+                text: '',
+                textSize: true,
+                wnWidth: 0,
+
+                detectText: function (event) {
+                    console.log("Wpisywanie...")
+                    if (game.createdVocabulary) {
+                        console.log("Usuwam.")
+                        document.getElementById("vocabulary").remove()
+                        document.getElementById("boxToHide").style.display = "block"
+                        game.createdVocabulary = false
+                    }
+                    if (game.createdGossips) {
+                        console.log("Usuwam.")
+                        document.getElementById("gossips").remove()
+                        document.getElementById("boxToHide").style.display = "block"
+                        game.createdGossips = false
+                    }
+                    text = whatsNext.innerHTML
+                    if (event.keyCode >= 65 && event.keyCode <= 90) {
+                        game.wnWidth += 30
+                        whatsNext.style.width = game.wnWidth + "px"
+                        if (game.textSize) {
+                            ch = event.key.toUpperCase()
+                            whatsNext.innerHTML += ch
+                        } else {
+                            ch = event.key.toLowerCase()
+                            whatsNext.innerHTML += ch
+                        }
+                    } else {
+                        switch (event.key) {
+                            case "Enter":
+                                game.enterClick(text)
+                                break
+                            case "Backspace":
+                                if (game.wnWidth > 0)
+                                    game.wnWidth -= 30
+                                whatsNext.style.width = game.wnWidth + "px"
+                                whatsNext.innerHTML = text.slice(0, -1)
+                                break
+                            case " ":
+                                game.wnWidth += 30
+                                whatsNext.style.width = game.wnWidth + "px"
+                                whatsNext.innerHTML += " "
+                                break
+                            case "Shift":
+                                game.textSize = false
+                                // console.log("Trzymam shift.")
+                                break
+                        }
+                    }
+                },
+
+                releaseShift: function (event) {
+                    if (event.key == "Shift") {
+                        game.textSize = true
+                        // console.log("Puszczam shift.")
+                    }
+                },
+
+                createdVocabulary: false,
+                vocabulary: function () {
+                    document.getElementById("boxToHide").style.display = "none"
+                    voc = document.createElement("p")
+                    voc.setAttribute("id", "vocabulary")
+                    voc.innerHTML = "NORTH or N, SOUTH or S<br/>\
+                    WEST or W, EAST or E<br/>\
+                    TAKE (object) or T (object)<br/>\
+		            DROP (object) or D (object)<br/>\
+		            USE (object) or U (object)<br/>\
+		            GOSSIPS or G, VOCABULARY or V<br/>\
+                    Press any key"
+                    document.body.append(voc)
+                    game.createdVocabulary = true
+                },
+
+                createdVocabulary: false,
+                gossips: function () {
+                    document.getElementById("boxToHide").style.display = "none"
+                    gos = document.createElement("p")
+                    gos.setAttribute("id", "gossips")
+                    gos.innerHTML = "The  woodcutter lost  his home key...<br/>\
+		            The butcher likes fruit... The cooper<br/>\
+		            is greedy... Dratewka plans to make a<br/>\
+		            poisoned  bait for the dragon...  The<br/>\
+		            tavern owner is buying food  from the<br/>\
+		            pickers... Making a rag from a bag...<br/>\
+		            Press any key"
+                    document.body.append(gos)
+                    game.createdGossips = true
+                },
+
+                length: 0,
+                finishIntro: false,
+
+                init: function () {
+
+                    if (!game.finishIntro) {
+                        var audio = new Audio('Materials/hejnał.mp3')
+                        audio.play()
+                        var intro = document.createElement("img")
+                        intro.src = "Materials/img/czołówka.jpg"
+                        intro.style.position = "fixed"
+                        intro.style.left = "50%"
+                        intro.style.top = "50%"
+                        intro.style.transform = "translate(-50%, -50%)"
+                        document.body.append(intro)
+                        intro.style.opacity = "0"
+                        iOpacity = 0
+                        increaseOpacity = setInterval(function () {
+                            iOpacity += 0.066
+                            intro.style.opacity = iOpacity
+                        }, 1000)
+                        finishIntro = setTimeout(function () {
+                            document.body.innerHTML = ''
+                            document.body.style.background = "rgb(0,44,3)"
+                            game.finishIntro = true
+                            var fta = document.createElement("p")
+                            fta.style.fontFamily = 'Dratewka';
+                            fta.style.fontSize = "30px"
+                            fta.style.color = "rgb(159,240,75)"
+                            fta.style.position = "fixed"
+                            fta.style.left = "50%"
+                            fta.style.top = "50%"
+                            fta.style.transform = "translate(-50%, -50%)"
+                            fta.style.textAlign = "center"
+                            document.body.append(fta)
+                            animate = setInterval(function () {
+                                text = "This is based on a true story not a legend! ;-) \
+                                Dratewka the Shoemaker was a boy who lived in a small village close to Cracov in Poland during the Middle ages. \
+                                One day a terrifying dragon arrived in the town, living in the cave at the foot of the Wawel Castle Mountain. \
+                                The dragon began terrorizing the people and animals in and around the town. \
+                                The fearless knights were unable to defeat the beast head on. \
+                                Dratewka himself had no weapons but he used his skill and cunning to kill the dragon. \
+                                He proved his feat by making shoes from the dragon's skin!"
+                                if (length < text.length) {
+                                    fta.innerHTML += text[length]
+                                    length++
+                                } else {
+                                    length = 0
+                                    animate = clearInterval(animate)
+                                    setTimeout(function () {
+                                        fta.innerHTML = ""
+                                        text = "Now it is your turn to follow in Dratewka's footsteps... \
+                                        Happy dragon slaying! \
+                                        Later you can visit Cracov city and the famous dragon cave."
+                                        animate = setInterval(function () {
+                                            if (length < text.length) {
+                                                fta.innerHTML += text[length]
+                                                length++
+                                            } else {
+                                                length = 0
+                                                animate = clearInterval(animate)
+                                                setTimeout(function () {
+                                                    document.body.style.background = "black"
+                                                    afterIntro()
+                                                }, 3000)
+                                            }
+                                        }, 60)//drugi tekst
+                                    }, 2000)
+                                }
+
+                            }, 40)//pierwszy tekst
+                        }, 15000)
+                    } else {
+                        afterIntro()
+                    }
+
+                    function afterIntro() {
+                        document.body.innerHTML = ''//czyszczenie okna
+
+                        game.wnWidth = 0
+                        //----------------funkcje do obsługi wpisywania---------------------
+                        window.addEventListener("keydown", game.detectText, true)
+                        window.addEventListener("keyup", game.releaseShift, true)
+
+                        //----------------opis lokacji---------------------
+                        var text = document.createElement("p")
+                        text.innerHTML = currentPosition.description
+                        document.body.append(text)
+
+                        //----------------obrazek---------------------
+                        var img = document.createElement("img")
+                        img.setAttribute("id", "image")
+                        img.src = "Materials/img/" + currentPosition.image
+                        img.style.backgroundColor = currentPosition.color
+                        document.body.append(img)
+
+                        //----------------chowanie elementów---------------------
+                        var boxToHide = document.createElement("div")
+                        boxToHide.setAttribute("id", "boxToHide")
+                        document.body.append(boxToHide)
+
+                        //----------------co niesiesz---------------------
+                        var items = document.createElement("p")
+                        items.setAttribute("id", "items")
+                        if (game.hand.length == 0) {
+                            items.innerHTML = "You carry nothing."
+                        }
+                        else {
+                            items.innerHTML = "You carry "
+                            for (let i = 0; i < game.hand.length; i++) {
+                                items.innerHTML += game.hand[i][1]
+                                if (i < game.hand.length - 1) {
+                                    items.innerHTML += " ,"
+                                }
+                                else {
+                                    items.innerHTML += "."
+                                }
+                            }
+                        }
+                        boxToHide.append(items)
+
+                        //----------------co widzisz---------------------
+                        var inSight = document.createElement("p")
+                        inSight.setAttribute("id", "inSight")
+                        if (currentPosition.items.length == 0) {
+                            inSight.innerHTML = "You see nothing."
+                        }
+                        else {
+                            inSight.innerHTML = "You see "
+                            for (let i = 0; i < currentPosition.items.length; i++) {
+                                inSight.innerHTML += currentPosition.items[i][1]
+                                if (i < currentPosition.items.length - 1) {
+                                    inSight.innerHTML += " ,"
+                                }
+                                else {
+                                    inSight.innerHTML += "."
+                                }
+                            }
+                        }
+                        boxToHide.append(inSight)
+
+                        //----------------gdzie możesz iść---------------------
+                        var directions = document.createElement("p")
+                        directions.innerHTML = "You can go " + currentPosition.directions + "."
+                        boxToHide.append(directions)
+
+
+                        //----------------kompas---------------------
+                        var cmp = document.createElement("div")
+                        cmp.setAttribute("id", "kompas")
+                        cmp.style.backgroundImage = "url('Materials/kompas.bmp')"
+                        cmp.style.backgroundRepeat = "no-repeat"
+
+                        for (let i = 0; i < currentPosition.directions.length; i++) {
+                            switch (currentPosition.directions[i]) {
+                                case "NORTH":
+                                    createPointer("20px", "", "178px", "", "N")
+                                    break
+                                case "SOUTH":
+                                    createPointer("", "20px", "188px", "", "S")
+                                    break
+                                case "WEST":
+                                    createPointer("160px", "", "0", "", "W")
+                                    break
+                                case "EAST":
+                                    createPointer("160px", "", "", "0", "E")
+                            }
+                        }
+
+                        function createPointer(tpx, bpx, lpx, rpx, letter) {
+                            pointer = document.createElement("p")
+                            pointer.style.margin = "0"
+                            pointer.innerHTML = letter
+                            pointer.style.position = "absolute"
+                            pointer.style.top = tpx
+                            pointer.style.bottom = bpx
+                            pointer.style.left = lpx
+                            pointer.style.right = rpx
+                            cmp.append(pointer)
+                        }
+
+                        document.body.append(cmp)
+
+                        //----------------pole do wpisywania komend---------------------
+                        var whatsNext = document.createElement("p")
+                        whatsNext.setAttribute("id", "whatsNext")
+                        whatsNext.style.height = "30px"
+                        whatsNext.style.width = "0"
+                        whatsNext.style.margin = "0"
+                        whatsNext.style.fontSize = "30px"
+                        whatsNext.style.marginLeft = "20px"
+                        whatsNext.style.background = "black"
+                        whatsNext.style.color = "rgb(80,80,80)"
+                        whatsNext.style.fontFamily = "Dratewka"
+
+                        var wch = document.createElement("div")
+                        wch.style.width = "20px"
+                        wch.style.height = "30px"
+                        wch.style.background = "rgb(80,80,80)"
+
+                        //----------------opis do pola gdzie wpisujesz komendy---------------------
+                        var whatsNextText = document.createElement("p")
+                        whatsNextText.innerHTML = "What now?"
+                        whatsNextText.style.margin = "0"
+                        var boxForNext = document.createElement("div")
+                        boxForNext.style.display = "flex"
+                        boxForNext.style.FlexDirection = "row"
+                        boxForNext.append(whatsNextText)
+                        boxForNext.append(whatsNext)
+                        boxForNext.append(wch)
+                        boxToHide.append(boxForNext)
+
+                        //----------------pole do powiadomień-------------------------------
+                        var notifications = document.createElement("p")
+                        notifications.setAttribute("id", "notifications")
+                        boxToHide.append(notifications)
+                    }
+                },
+            }
+            game.addPositions()
+            disperseItems()
+            game.setPosition(game.playerPositionY, game.playerPositionX)
+        }
+
+        document.addEventListener("DOMContentLoaded", ready)
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

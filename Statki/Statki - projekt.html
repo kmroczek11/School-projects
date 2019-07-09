@@ -1,0 +1,753 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Statki</title>
+    <script>
+        var fieldSize = 10;
+        var playerField = [];
+        function zeroPlayer() {
+            for (let i = 0; i < fieldSize + 2; i++) {
+                playerField[i] = [];
+                for (let j = 0; j < fieldSize + 2; j++) {
+                    playerField[i][j] = 0;
+                }
+            }
+        }
+
+        computerField = [];
+        function zeroComputer() {
+            for (let i = 0; i < fieldSize + 2; i++) {
+                computerField[i] = [];
+                for (let j = 0; j < fieldSize + 2; j++) {
+                    computerField[i][j] = 0;
+                }
+            }
+        }
+
+        function renderPlayer() {
+            for (let i = 1; i < fieldSize + 1; i++) {
+                for (let j = 1; j < fieldSize + 1; j++) {
+                    var el = document.createElement("div");
+                    el.innerHTML = playerField[i][j];
+                    el.className = "poleGracza";
+                    el.setAttribute("id", i + " " + j)
+                    document.getElementById("playerBox").appendChild(el);
+                    el.innerHTML = ""
+                }
+            }
+        }
+
+        function renderComputer() {
+            for (let i = 1; i < fieldSize + 1; i++) {
+                for (let j = 1; j < fieldSize + 1; j++) {
+                    var el = document.createElement("div");
+                    el.innerHTML = computerField[i][j];
+                    el.className = "poleKomputera";
+                    if (computerField[i][j] > 0 && computerField[i][j] < 5) {
+                        el.classList.add("red")
+                    }
+                    document.getElementById("computerBox").appendChild(el);
+                    el.innerHTML = ""
+                }
+            }
+        }
+
+        function embed(N, M) {
+            var czyMoznaWstawic = false;
+            var x = Math.floor((Math.random() * (N - M + 1)) + 1)
+            var y = Math.floor(1 + Math.random() * 10)
+            while (!czyMoznaWstawic) {
+                var rowneZero = true;
+                var kierunek = Math.round(Math.random());
+                if (kierunek == 0) {
+                    while (computerField[y][x] != 0) {
+                        var x = Math.floor((Math.random() * (N - M + 1)) + 1)
+                        var y = Math.floor(1 + Math.random() * 10)
+                    }
+                    for (let i = y - 1; i < y + 2; i++) {
+                        for (let j = x - 1; j < x + M + 1; j++) {
+                            if (computerField[i][j] != 0) {
+                                var rowneZero = false;
+                                break;
+                            }
+                            if (!rowneZero) break;
+                        }
+                    }
+                    if (rowneZero) {
+                        for (let i = x; i < x + M; i++) {
+                            computerField[y][i] = M;
+                        }
+                        var czyMoznaWstawic = true;
+                    } else {
+                        var x = Math.floor((Math.random() * (N - M + 1)) + 1)
+                        var y = Math.floor(1 + Math.random() * 10)
+                    }
+
+                } else {
+                    var x = Math.floor(1 + Math.random() * 10)
+                    var y = Math.floor((Math.random() * (N - M + 1)) + 1)
+                    var rowneZero = true;
+                    while (computerField[y][x] != 0) {
+                        var x = Math.floor(1 + Math.random() * 10)
+                        var y = Math.floor((Math.random() * (N - M + 1)) + 1)
+                    }
+                    for (let i = y - 1; i < y + M + 1; i++) {
+                        for (let j = x - 1; j < x + 2; j++) {
+                            if (typeof (playerField[i]) == 'undefined' && playerField[i] == null) {
+                                var rowneZero = false;
+                                break
+                            }
+                            if (computerField[i][j] != 0) {
+                                var rowneZero = false;
+                                break;
+                            }
+                        }
+                        if (!rowneZero) break;
+                    }
+                    if (rowneZero) {
+                        for (let i = y; i < y + M; i++) {
+                            computerField[i][x] = M;
+                        }
+                        var czyMoznaWstawic = true;
+                    } else {
+                        var x = Math.floor(1 + Math.random() * 10)
+                        var y = Math.floor((Math.random() * (N - M + 1)) + 1)
+                    }
+                }
+            }
+        }
+
+        var idStatku = 4, ileUsunieto = 0, contains = true
+        function models(ile) {
+            el = document.createElement("div")
+            el.setAttribute("id", ile)
+            var enter = function () {
+                var kolor = getRandomColor();
+                var kids = this.children
+                var canClick = true
+                for (let i = 0; i < kids.length; i++) {
+                    if (kids[i].classList.contains("clicked")) {
+                        canClick = false
+                        break
+                    }
+                }
+                if (canClick) {
+                    for (let i = 0; i < this.children.length; i++) {
+                        kids[i].style.backgroundColor = kolor
+                    }
+                }
+            }
+
+            el.addEventListener("mouseenter", enter, true)
+
+            var left = function () {
+                var kids = this.children
+                var canClick = true
+                for (let i = 0; i < kids.length; i++) {
+                    if (kids[i].classList.contains("clicked")) {
+                        canClick = false
+                        break
+                    }
+                }
+                if (canClick) {
+                    for (let i = 0; i < kids.length; i++) {
+                        kids[i].style.backgroundColor = ""
+                    }
+                }
+            }
+
+            el.addEventListener("mouseleave", left, true)
+
+            var click = function () {
+                var kids = this.children
+                for (let i = 0; i < kids.length; i++) {
+                    if (!kids[i].classList.contains("clicked")) {
+                        var contains = false
+                        break
+                    }
+                }
+                if (contains) {
+                    this.removeEventListener("mouseleave", left, true)
+                    this.removeEventListener("mouseenter", enter, true)
+                } else {
+                    var uncolorElements = part.children
+                    for (let i = 0; i < part.children.length; i++) {
+                        uncolorElements[i].style.backgroundColor = ""
+                        uncolorElements[i].classList.remove("clicked")
+                    }
+                    for (let i = 0; i < kids.length; i++) {
+                        kids[i].style.backgroundColor = "blue"
+                        kids[i].classList.add("clicked")
+                    }
+                    idStatku = parseInt(this.id)
+                    part = this
+                }
+                contains = true
+                console.log("Id statku to: " + idStatku)
+            }
+
+            el.addEventListener("click", click, true)
+
+            document.getElementById("sidePanel").appendChild(el)
+            for (j = 0; j < ile; j++) {
+                ele = document.createElement("div")
+                ele.className = "blok"
+                if (j == 0) {
+                    ele.style.clear = "both"
+                }
+                el.appendChild(ele)
+
+            }
+
+            part = document.getElementById("4")
+
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        }
+
+
+
+
+        function place() {
+            var playerBattlefield = document.getElementById('playerBox').children//pobranie elementów z pola garcza
+            var kierunek = true
+            for (let i = 0; i < playerBattlefield.length; i++) {//pętla, która dodaje każdemu elementowi zdarzenia
+                playerBattlefield[i].onmouseenter = function (element) {
+                    var y = parseInt(element.target.id.split(" ")[0])//pobranie wartości w pionie
+                    var x = parseInt(element.target.id.split(" ")[1])//pobranie wartości w poziomie
+                    playerBattlefield[i].oncontextmenu = function (event) {//kliknięcie prawym
+                        event.preventDefault()
+                        kierunek = !kierunek
+                        console.clear()
+                        console.log("Klikniety prawy. Kierunek to " + kierunek)
+                        test(kierunek)
+                    }
+                    test(kierunek)
+                    function test(kierunek) {//funkcja sprawdza czy można umieścić statek
+                        var M = idStatku
+                        function condition(sprawdzPion, sprawdzPoziom, ileElementow, orientacja, odkoloruj1, odkoloruj2) {
+                            uncolor()
+                            function uncolor() {
+                                var toUncolor = []
+                                if (orientacja == "poziom") {
+                                    if (x + M > fieldSize) {
+                                        if (y > 6) {
+                                            for (let i = fieldSize - M + 1; i < fieldSize + 1; i++) {
+                                                var element = document.getElementById(i + " " + x)
+                                                if (y != i) {
+                                                    toUncolor.push(element)
+                                                }
+                                            }
+                                        } else {
+                                            for (let i = y - M; i < y + M; i++) {
+                                                var element = document.getElementById(i + " " + x)
+                                                if (y != i && element != null)
+                                                    toUncolor.push(element)
+                                            }
+                                        }
+                                    } else {
+                                        for (let i = odkoloruj1; i < odkoloruj2; i++) {
+                                            var element = document.getElementById(i + " " + x)
+                                            if (y != i && element != null)
+                                                toUncolor.push(element)
+                                        }
+                                    }
+                                } else if (orientacja == "pion") {
+                                    if (y + M > fieldSize + 1) {
+                                        if (x > 6) {
+                                            var toUncolor = []
+                                            for (let i = fieldSize - M + 1; i < fieldSize + 1; i++) {
+                                                var element = document.getElementById(y + " " + i)
+                                                if (x != i) {
+                                                    toUncolor.push(element)
+                                                }
+                                            }
+                                        } else {
+                                            var toUncolor = []
+                                            for (let i = x - M; i < x + M; i++) {
+                                                var element = document.getElementById(y + " " + i)
+                                                if (x != i && element != null)
+                                                    toUncolor.push(element)
+                                            }
+                                        }
+                                    } else {
+                                        for (let i = odkoloruj1; i < odkoloruj2; i++) {
+                                            var element = document.getElementById(y + " " + i)
+                                            if (x != i && element != null)
+                                                toUncolor.push(element)
+                                        }
+                                    }
+                                }
+
+                                //////////////////////////////////////////////////WSPÓLNA CZĘŚĆ///////////////////////////////////////////////////
+                                for (let i = 0; i < toUncolor.length; i++) {
+                                    if (!toUncolor[i].classList.contains("chosen"))
+                                        toUncolor[i].style.backgroundColor = ""
+                                    else
+                                        toUncolor[i].style.backgroundColor = "black"
+                                }
+                                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            }
+
+                            function crucialPart() {
+                                if (x + M > fieldSize && orientacja == "poziom") {
+                                    for (let i = y - 1; i < y + 2; i++) {
+                                        for (let j = fieldSize - M; j < fieldSize + 1; j++) {
+                                            //console.log("zawartosc [" + playerField[i][j] + "]")
+                                            //console.log("Pole, które ma w pionie:" + i + " , a w poziomie:" + j)
+                                            if (playerField[i][j] != 0) {
+                                                return false
+                                            }
+                                        }
+                                    }
+                                    return true
+                                } else if (y + M > fieldSize && orientacja == "pion") {
+                                    for (let i = x - 1; i < x + 2; i++) {
+                                        for (let j = fieldSize - M; j < fieldSize + 1; j++) {
+                                            if (playerField[j][i] != 0) {
+                                                return false
+                                            }
+                                        }
+                                    }
+                                    return true
+                                } else {
+                                    for (let i = y - 1; i < sprawdzPion; i++) {
+                                        for (let j = x - 1; j < sprawdzPoziom; j++) {
+                                            //console.log("zawartosc [" + playerField[i][j] + "]")
+                                            //console.log("Pole, które ma w pionie:" + i + " , a w poziomie:" + j)
+                                            if (playerField[i][j] != 0) {
+                                                return false
+                                            }
+                                        }
+                                    }
+                                    return true
+                                }
+                            }
+
+                            if (x + M > fieldSize && orientacja == "poziom") {
+                                if (crucialPart()) {
+                                    console.log("Można wstawić!")
+                                    var elements = []//elementy do pokolorowania
+                                    for (let i = fieldSize - M + 1; i < fieldSize + 1; i++) {
+                                        var element = document.getElementById(y + " " + i)
+                                        elements.push(element)
+                                    }
+
+                                    for (let i = 0; i < elements.length; i++) {
+                                        elements[i].style.backgroundColor = "green"
+                                    }
+
+                                    playerBattlefield[i].onmouseout = function () {//dodanie zdarzenia out
+                                        for (let i = 0; i < elements.length; i++) {
+                                            if (!elements[i].classList.contains("chosen"))
+                                                elements[i].style.backgroundColor = ""
+                                        }
+                                    }
+
+                                    playerBattlefield[i].onclick = function (event) {//dodanie zdarzenia klik
+                                        if (crucialPart()) {
+                                            for (let i = 0; i < elements.length; i++) {
+                                                elements[i].style.backgroundColor = "black"
+                                                elements[i].classList.add("chosen")
+                                            }
+                                            for (var i = fieldSize - M + 1; i < fieldSize + 1; i++) {
+                                                console.log("Pole w które wstawiam jedynki:" + y + " " + i)
+                                                playerField[y][i] = 1
+                                            }
+                                            part.style.display = "none"
+                                            idStatku = ""
+                                            ileUsunieto++
+                                            createButton();
+                                        }
+                                    }
+                                } else {
+                                    console.log("Nie można wstawić!")
+                                    var elements = []//elementy do pokolorowania
+
+                                    for (let i = fieldSize - M + 1; i < fieldSize + 1; i++) {
+                                        var element = document.getElementById(y + " " + i)
+                                        elements.push(element)
+
+                                    }
+
+                                    for (let i = 0; i < elements.length; i++) {
+                                        elements[i].style.backgroundColor = "red"
+                                    }
+
+                                    playerBattlefield[i].onmouseout = function () {//dodanie zdarzenia out
+                                        for (let i = 0; i < elements.length; i++) {
+                                            if (!elements[i].classList.contains("chosen"))
+                                                elements[i].style.backgroundColor = ""
+                                            else
+                                                elements[i].style.backgroundColor = "black"
+                                        }
+                                    }
+
+                                    playerBattlefield[i].onclick = function (event) {//dodanie zdarzenia klik
+                                        for (let i = 0; i < elements.length; i++) {
+                                            elements[i].style.backgroundColor = "red"
+                                        }
+                                    }
+                                }
+                            } else if (y + M > fieldSize && orientacja == "pion") {
+                                if (crucialPart()) {
+                                    console.log("Można wstawić!")
+                                    var elements = []//elementy do pokolorowania
+                                    for (let i = fieldSize - M + 1; i < fieldSize + 1; i++) {
+                                        var element = document.getElementById(i + " " + x)
+                                        elements.push(element)
+                                    }
+
+                                    for (let i = 0; i < elements.length; i++) {
+                                        elements[i].style.backgroundColor = "green"
+                                    }
+
+                                    playerBattlefield[i].onmouseout = function () {//dodanie zdarzenia out
+                                        for (let i = 0; i < elements.length; i++) {
+                                            if (!elements[i].classList.contains("chosen"))
+                                                elements[i].style.backgroundColor = ""
+                                        }
+                                    }
+
+                                    playerBattlefield[i].onclick = function (event) {//dodanie zdarzenia klik
+                                        if (crucialPart()) {
+                                            for (let i = 0; i < elements.length; i++) {
+                                                elements[i].style.backgroundColor = "black"
+                                                elements[i].classList.add("chosen")
+
+                                            }
+                                            for (var i = fieldSize - M + 1; i < fieldSize + 1; i++) {
+                                                console.log("Pole w które wstawiam jedynki:" + y + " " + i)
+                                                playerField[i][x] = 1
+                                            }
+                                            part.style.display = "none"
+                                            idStatku = ""
+                                            ileUsunieto++
+                                            createButton();
+                                        }
+                                    }
+                                } else {
+                                    console.log("Nie można wstawić!")
+                                    var elements = []//elementy do pokolorowania
+
+                                    for (let i = fieldSize - M + 1; i < fieldSize + 1; i++) {
+                                        var element = document.getElementById(i + " " + x)
+                                        elements.push(element)
+
+                                    }
+
+                                    for (let i = 0; i < elements.length; i++) {
+                                        elements[i].style.backgroundColor = "red"
+                                    }
+
+                                    playerBattlefield[i].onmouseout = function () {//dodanie zdarzenia out
+                                        for (let i = 0; i < elements.length; i++) {
+                                            if (!elements[i].classList.contains("chosen"))
+                                                elements[i].style.backgroundColor = ""
+                                            else
+                                                elements[i].style.backgroundColor = "black"
+                                        }
+                                    }
+
+                                    playerBattlefield[i].onclick = function (event) {//dodanie zdarzenia klik
+                                        for (let i = 0; i < elements.length; i++) {
+                                            elements[i].style.backgroundColor = "red"
+
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (crucialPart()) {
+                                    console.log("Można wstawić!")
+                                    var elements = []//elementy do pokolorowania
+                                    if (orientacja == "poziom") {
+                                        for (let i = x; i < ileElementow; i++) {
+                                            var element = document.getElementById(y + " " + i)
+                                            elements.push(element)
+                                        }
+                                    } else {
+                                        for (let i = y; i < ileElementow; i++) {
+                                            var element = document.getElementById(i + " " + x)
+                                            elements.push(element)
+                                        }
+                                    }
+
+                                    for (let i = 0; i < elements.length; i++) {
+                                        elements[i].style.backgroundColor = "green"
+                                    }
+
+                                    playerBattlefield[i].onmouseout = function () {//dodanie zdarzenia out
+                                        for (let i = 0; i < elements.length; i++) {
+                                            if (!elements[i].classList.contains("chosen"))
+                                                elements[i].style.backgroundColor = ""
+                                        }
+                                    }
+
+                                    playerBattlefield[i].onclick = function (event) {//dodanie zdarzenia klik
+                                        if (crucialPart()) {
+                                            for (let i = 0; i < elements.length; i++) {
+                                                elements[i].style.backgroundColor = "black"
+                                                elements[i].classList.add("chosen")
+                                            }
+
+                                            if (orientacja == "poziom") {
+                                                for (let i = x; i < ileElementow; i++) {
+                                                    console.log("Pole w które wstawiam jedynki:" + y + " " + i)
+                                                    playerField[y][i] = 1
+                                                }
+                                            } else {
+                                                for (let i = y; i < ileElementow; i++) {
+                                                    console.log("Pole w które wstawiam jedynki:" + i + " " + x)
+                                                    playerField[i][x] = 1
+                                                }
+                                            }
+                                            part.style.display = "none"
+                                            idStatku = ""
+                                            ileUsunieto++
+                                            createButton();
+                                        }
+                                    }
+                                } else {
+                                    console.log("Nie można wstawić!")
+                                    var elements = []//elementy do pokolorowania
+                                    if (orientacja == "poziom") {
+                                        for (let i = x; i < ileElementow; i++) {
+                                            var element = document.getElementById(y + " " + i)
+                                            elements.push(element)
+                                        }
+                                    } else {
+                                        for (let i = y; i < ileElementow; i++) {
+                                            var element = document.getElementById(i + " " + x)
+                                            elements.push(element)
+                                        }
+                                    }
+                                    for (let i = 0; i < elements.length; i++) {
+                                        elements[i].style.backgroundColor = "red"
+                                    }
+
+                                    playerBattlefield[i].onmouseout = function () {//dodanie zdarzenia out
+                                        for (let i = 0; i < elements.length; i++) {
+                                            if (!elements[i].classList.contains("chosen"))
+                                                elements[i].style.backgroundColor = ""
+                                            else
+                                                elements[i].style.backgroundColor = "black"
+                                        }
+                                    }
+
+                                    playerBattlefield[i].onclick = function (event) {//dodanie zdarzenia klik
+                                        for (let i = 0; i < elements.length; i++) {
+                                            elements[i].style.backgroundColor = "red"
+
+                                        }
+                                    }
+                                }
+                            }
+                        }//konczacy condition
+                        if (kierunek) {//sprawdzanie statku w prawo
+                            console.log("W prawo.")
+                            condition(y + 2, x + M + 1, x + M, "poziom", y - M, y + M)
+
+                        } else {//sprawdzanie statku w dół
+                            console.log("W dół.")
+                            condition(y + M + 1, x + 2, y + M, "pion", x - M, x + M)
+                        }
+                    }
+                }
+            }
+        }
+
+        function createButton() {
+            if (ileUsunieto == 10) {
+                document.getElementById("playerBox").outerHTML = document.getElementById("playerBox").outerHTML
+                var button = document.createElement("button")
+                var text = document.createTextNode("Rozpocznij grę!");
+                button.appendChild(text)
+                document.body.appendChild(button)
+                button.addEventListener("click", function () {
+                    alert("Zaczynasz jako pierwszy.")
+                    playTheGame()
+                })
+            }
+        }
+
+        var whoseMove = true
+        var playerCorrectShots = 0
+        var computerCorrectShots = 0
+        function playTheGame() {
+            var click = function () {
+                if (whoseMove) {
+                    if (this.classList.contains("red") && !this.classList.contains("missed") && !this.classList.contains("struck")) {
+                        console.log("klikniety")
+                        this.style.backgroundImage = "url('Struck.png')"
+                        this.classList.add("struck")
+                        playerCorrectShots++
+                        this.removeEventListener("click", click, true)
+                        if (playerCorrectShots == 20) {
+                            if (!alert("Wygrałeś!")) {
+                                window.location.reload()
+                            }
+                        }
+                        console.log("Licznik poprawnych gracza: " + playerCorrectShots)
+                    } else {
+                        this.style.backgroundImage = "url('Missed.png')"
+                        this.classList.add("missed")
+                        this.removeEventListener("click", click, true)
+                        console.log("Licznik poprawnych gracza: " + playerCorrectShots)
+                    }
+                    whoseMove = !whoseMove
+                    if (!whoseMove)
+                        setTimeout(computerMove, 1000)
+                    console.log("Ruch gracza: " + whoseMove)
+                } else {
+                    alert("Ruch komputera.")
+                }
+            }
+            var computerBattlefield = document.getElementById("computerBox").children
+            var playerBattlefield = document.getElementById("playerBox").children
+
+            function computerMove() {
+                var randomSquare = Math.floor((Math.random() * (playerBattlefield.length - 1)) + 0)
+                while (playerBattlefield[randomSquare].classList.contains("struck") || playerBattlefield[randomSquare].classList.contains("missed")) {
+                    var randomSquare = Math.floor((Math.random() * (playerBattlefield.length - 1)) + 0)
+                    console.log("Nowe pole: " + randomSquare)
+                }
+                console.log("Pole planszy gracza numer: " + randomSquare)
+                if (playerBattlefield[randomSquare].classList.contains("chosen")) {
+                    playerBattlefield[randomSquare].style.backgroundImage = "url('Struck.png')"
+                    playerBattlefield[randomSquare].classList.add("struck")
+                    playerBattlefield[randomSquare].innerHTML = ""
+                    computerCorrectShots++
+                    if (computerCorrectShots == 20) {
+                        alert("Przegrałeś!")
+                        var showShips = document.getElementById("computerBox").children
+                        for (let i = 0; i < showShips.length; i++) {
+                            if (showShips[i].classList.contains("red"))
+                                showShips[i].style.backgroundColor = "red"
+                        }
+                    }
+                    console.log("Licznik poprawnych komputera: " + computerCorrectShots)
+                } else {
+                    playerBattlefield[randomSquare].style.backgroundImage = "url('Missed.png')"
+                    playerBattlefield[randomSquare].classList.add("missed")
+                    console.log("Licznik poprawnych komputera: " + computerCorrectShots)
+                }
+                whoseMove = true
+                console.log("Ruch gracza: " + whoseMove)
+            }
+            for (let i = 0; i < computerBattlefield.length; i++) {
+                computerBattlefield[i].addEventListener("click", click, true)
+            }
+        }
+
+        //setTimeout(function(){ console.table(playerField); }, 5000);
+
+        function init() {
+            zeroPlayer()
+            renderPlayer()
+            zeroComputer()
+            var statki = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4];
+            for (var i = statki.length - 1; i >= 0; i--) {
+                models(statki[i])
+            }
+            for (var i = 0; i < statki.length; i++) {
+                embed(fieldSize, statki[i])
+            }
+            renderComputer()
+            var one = document.getElementById("4").children;
+            for (i = 0; i < one.length; i++) {
+                one[i].style.backgroundColor = "blue"
+                one[i].classList.add("clicked")
+            }
+            place()
+        }
+    </script>
+    <style>
+        .poleGracza {
+            width: 40px;
+            height: 40px;
+            border: 1px solid black;
+            float: left;
+        }
+
+        .blok {
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            float: left;
+            margin-bottom: 20px;
+        }
+
+        .blok:nth-child(n+1) {
+            margin-left: -1px;
+        }
+
+        .poleGracza:nth-child(10n+1) {
+            clear: both;
+        }
+
+        .poleGracza:nth-child(n+1) {
+            margin-left: -1px;
+        }
+
+        .poleGracza:nth-child(n+11) {
+            margin-top: -1px;
+        }
+
+        .placed {
+            background-color: green;
+        }
+
+        button {
+            width: 200px;
+            height: 50px;
+            color: green;
+        }
+
+        .poleKomputera {
+            width: 40px;
+            height: 40px;
+            border: 1px solid black;
+            float: left
+        }
+
+        .poleKomputera:nth-child(10n+1) {
+            clear: both;
+        }
+
+        .poleKomputera:nth-child(n+1) {
+            margin-left: -1px;
+        }
+
+        .poleKomputera:nth-child(n+11) {
+            margin-top: -1px;
+        }
+
+        #playerBox {
+            position: fixed;
+            left: 300px;
+        }
+
+        #computerBox {
+            position: fixed;
+            left: 800px;
+        }
+    </style>
+</head>
+
+<body onload="init()">
+    <div id="playerBox"></div>
+    <div id="computerBox"></div>
+    <div id="sidePanel"></div>
+</body>
+
+</html>

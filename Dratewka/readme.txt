@@ -1,0 +1,1 @@
+Uwa¿am ¿e mam wszystko aczkolwiek mogê siê myliæ :)
