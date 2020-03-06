@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hexy</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="libs/jquery.js"></script>
+    <script src="js/hex.js"></script>
+    <script src="js/net.js"></script>
+    <script src="js/main.js"></script>
+</head>
+
+<body>
+
+    <div id="elements">
+        <select id="size">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select>
+        <select id="levels">
+            <option value="0">Level 1</option>
+        </select>
+        <button id="add">Dodaj poziom</button>
+        <button id="save">Zapisz poziom na serwerze</button>
+        <button id="load">Wczytaj z serwera</button>
+        <button id="wall">Walls</button>
+        <button id="enemy">Enemy</button>
+        <button id="treasure">Treasure</button>
+        <button id="light">Light</button>
+        <button onclick="document.location.href=this.getAttribute('href');" href="hex.html">Go to hex!</button>
+        <button onclick="document.location.href=this.getAttribute('href');" href="game.html">Go to game!</button>
+    </div>
+    <textarea id="showLevel"></textarea>
+    <div id="area">
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+}
+
+#container {
+  width: 950px;
+  margin: 0 auto;
+  background: black;
+  position: relative;
+  overflow: hidden;
+}
+
+.headline {
+  display: flex;
+  justify-content: center;
+  margin-top: 9px;
+}
+
+nav ul {
+  list-style-type: none;
+  width: 100%;
+}
+
+nav ul li {
+  display: inline;
+}
+
+nav ul li a {
+  display: inline-block;
+  font-family: "Titan One", cursive;
+  color: rgb(0, 255, 0);
+  position: absolute;
+}
+
+nav ul li a:hover {
+  text-decoration: none;
+  animation-name: animacja;
+  animation-duration: 2s;
+  color: rgb(0, 255, 0);
+}
+
+@keyframes animacja {
+  from {
+    color: green;
+  }
+  to {
+    color: black;
+  }
+}
+
+footer {
+  width: 100%;
+  color: white;
+  margin-top: 9px;
+  clear: both;
+  height: 192px;
+  background-color: rgb(54, 65, 53);
+  opacity: 0.85;
+  position: relative;
+  height: 193px;
+  font-weight: 900;
+  font-family: "Righteous", cursive;
+  background-image: url(images/brick.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+footer ul {
+  list-style-type: none;
+}
+
+footer ul li {
+  text-align: center;
+}
+
+footer ul li a {
+  color: white;
+  display: block;
+}
+
+#logos {
+  position: absolute;
+  top: 77px;
+  left: 21px;
+}
+
+#logos2 {
+  position: absolute;
+  top: 11px;
+  right: 110px;
+}
+
+footer ul li a:hover {
+  color: rgb(123, 138, 123);
+  text-decoration: none;
+}
