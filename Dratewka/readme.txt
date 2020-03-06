@@ -1,26 +1,26 @@
 Opis:
-Gra "Dratewka" przeznaczona na stare generacje konsol, zrealizowana przy u¿yciu JavaScript.
+Gra "Dratewka" przeznaczona na stare generacje konsol, zrealizowana przy uï¿½yciu JavaScript.
 
-Czego siê nauczy³em?
-Lepiej pozna³em jêzyk JavaScript.
+Czego siï¿½ nauczyï¿½em?
+Lepiej poznaï¿½em jï¿½zyk JavaScript.
 
 Wykorzystane technologie:
 HTML, CSS, JavaScript
 
 Uruchomienie:
-Po pobraniu klikn¹æ podwójnie w plik index.html.
+Po pobraniu kliknï¿½ï¿½ podwï¿½jnie w plik index.html.
 
 Przebieg gry:
-Po ekranie wprowadzajacym znajdujemy siê w œwiecie Dratewki.
-Naszym zadaniem jest zebranie wszystkich czêœci owcy.
-Aby to zrobiæ musimy sukcesywnie kolekcjonowaæ kolejne przedmioty przemieszczajac siê po lokacjach.
-Kompas wskazuje nam gdzie mo¿emy siê udaæ.
-Wpisuj¹c "VOCABULARY" przejdziemy do wszystkich mo¿liwych poleceñ w grze.
-Wpisuj¹c "GOSSIPS" poznamy drobne podpowiedzi do gry.
+Po ekranie wprowadzajacym znajdujemy siï¿½ w ï¿½wiecie Dratewki.
+Naszym zadaniem jest zebranie wszystkich czï¿½ci owcy.
+Aby to zrobiï¿½ musimy sukcesywnie kolekcjonowaï¿½ kolejne przedmioty przemieszczajac siï¿½ po lokacjach.
+Kompas wskazuje nam gdzie moï¿½emy siï¿½ udaï¿½.
+Wpisujï¿½c "VOCABULARY" przejdziemy do wszystkich moï¿½liwych poleceï¿½ w grze.
+Wpisujï¿½c "GOSSIPS" poznamy drobne podpowiedzi do gry.
 Na ekranie widzimy:
-- co nosimy ze sob¹ (maksymalnie 3 przedmioty)
-- co widzimy i mo¿emy to wzi¹æ
-- kierunki, w których mo¿emy siê poruszaæ
-Aby tworzyæ kolejne przedmioty i mieæ postêpy w grze musimy u¿ywaæ odpowiednich przedmiotów które mamy ze sob¹ na odpowiednich lokacjach.
-W folderze "Materials" znajduje siê mapa lokacji dla szybszej eksploracji œwiata.
-Gra koñczy siê po utworzeniu owcy i podaniu jej smoku.
+- co nosimy ze sobï¿½ (maksymalnie 3 przedmioty)
+- co widzimy i moï¿½emy to wziï¿½ï¿½
+- kierunki, w ktï¿½rych moï¿½emy siï¿½ poruszaï¿½
+Aby tworzyï¿½ kolejne przedmioty i mieï¿½ postï¿½py w grze musimy uï¿½ywaï¿½ odpowiednich przedmiotï¿½w ktï¿½re mamy ze sobï¿½ na odpowiednich lokacjach.
+W folderze "Materials" znajduje siï¿½ mapa lokacji dla szybszej eksploracji ï¿½wiata.
+Gra koï¿½czy siï¿½ po utworzeniu owcy i podaniu jej smoku.
