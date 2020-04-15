@@ -9,7 +9,7 @@ class Player {
 
     this.container.add(this.player); // kontener w którym jest player
 
-    //this.axes = new THREE.AxesHelper(100); // osie konieczne do kontroli kierunku ruchu
+    // this.axes = new THREE.AxesHelper(100); // osie konieczne do kontroli kierunku ruchu
 
     //this.player.add(this.axes);
   }

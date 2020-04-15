@@ -101,8 +101,8 @@ class Level3D {
     this.renderer.setClearColor(0x007fff);
     this.renderer.setSize($(window).width(), $(window).height());
     $("#root").append(this.renderer.domElement);
-    var axes = new THREE.AxesHelper(1000);
-    this.scene.add(axes);
+    // var axes = new THREE.AxesHelper(1000);
+    // this.scene.add(axes);
     this.camera.position.set(0, 300, 150);
     this.camera.lookAt(this.scene.position);
     this.render();

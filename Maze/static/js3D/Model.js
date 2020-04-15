@@ -31,6 +31,8 @@ class Model {
 
         this.axes.rotation.y = (Math.PI / 2) * 3;
 
+        this.axes.visible = false
+
         this.meshModel.add(this.axes);
 
         // for (var i = 0; i < geometry.animations.length; i++) {
