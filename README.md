@@ -1,14 +1,13 @@
-# Szkolne projekty
-Każdy projekt coś wniósł w moje umiejętności.
-W każdym z folderów z projektami umieściłem plik readme.
+# School Projects
+This repository contains some of the projects which I have created when I was in a technical college.
 
-Chronologia projektów:
-1. Projekt strony internetowej
-2. Statki
-3. Piętnastka
-4. Dratewka
-5. Żużel
-6. Labirynt
-7. MP3 Player
-8. Checkers
-9. Lego Builder
+## Projects Timeline:
+* Projekt strony internetowej
+* Statki
+* Piętnastka
+* Dratewka
+* Żużel
+* Labirynt
+* MP3 Player
+* Checkers
+* Lego Builder
