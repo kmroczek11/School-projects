@@ -1,5 +1,5 @@
 # Opis:
-Gra "Dratewka" przeznaczona na stare generacje konsol, zrealizowana przy u�yciu JavaScript.
+Gra "Dratewka" przeznaczona na stare generacje konsol, zrealizowana przy użyciu JavaScript.
 
 ## Czego się nauczyłem?
 Lepiej poznałem język JavaScript.
