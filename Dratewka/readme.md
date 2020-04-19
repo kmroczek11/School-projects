@@ -1,29 +1,29 @@
 # Opis:
 Gra "Dratewka" przeznaczona na stare generacje konsol, zrealizowana przy u�yciu JavaScript.
 
-## Czego si� nauczy�em?
-Lepiej pozna�em j�zyk JavaScript.
+## Czego się nauczyłem?
+Lepiej poznałem język JavaScript.
 
 ### Wykorzystane technologie:
 HTML, CSS, JavaScript
 
 #### Uruchomienie:
-Po pobraniu klikn�� podw�jnie w plik index.html.
+Po pobraniu kliknąć podwójnie w plik index.html.
 
 ##### Przebieg gry:
-Po ekranie wprowadzajacym znajdujemy si� w �wiecie Dratewki.
-Naszym zadaniem jest zebranie wszystkich cz�ci owcy.
-Aby to zrobi� musimy sukcesywnie kolekcjonowa� kolejne przedmioty przemieszczajac si� po lokacjach.
-Kompas wskazuje nam gdzie mo�emy si� uda�.
-Wpisuj�c "VOCABULARY" przejdziemy do wszystkich mo�liwych polece� w grze.
-Wpisuj�c "GOSSIPS" poznamy drobne podpowiedzi do gry.
+Po ekranie wprowadzajacym znajdujemy się w świecie Dratewki.
+Naszym zadaniem jest zebranie wszystkich części owcy.
+Aby to zrobić musimy sukcesywnie kolekcjonować kolejne przedmioty przemieszczajac się po lokacjach.
+Kompas wskazuje nam gdzie możemy się udać.
+Wpisując "VOCABULARY" przejdziemy do wszystkich możliwych poleceń w grze.
+Wpisując "GOSSIPS" poznamy drobne podpowiedzi do gry.
 Na ekranie widzimy:
-- co nosimy ze sob� (maksymalnie 3 przedmioty)
-- co widzimy i mo�emy to wzi��
-- kierunki, w kt�rych mo�emy si� porusza�
-Aby tworzy� kolejne przedmioty i mie� post�py w grze musimy u�ywa� odpowiednich przedmiot�w kt�re mamy ze sob� na odpowiednich lokacjach.
-W folderze "Materials" znajduje si� mapa lokacji dla szybszej eksploracji �wiata.
-Gra ko�czy si� po utworzeniu owcy i podaniu jej smoku.
+- co nosimy ze sobą (maksymalnie 3 przedmioty)
+- co widzimy i możemy to wziąć
+- kierunki, w których możemy się poruszać
+Aby tworzyć kolejne przedmioty i mieć postępy w grze musimy używać odpowiednich przedmiotów które mamy ze sobą na odpowiednich lokacjach.
+W folderze "Materials" znajduje się mapa lokacji dla szybszej eksploracji świata.
+Gra kończy się po stworzeniu owcy i podaniu jej smoku.
 
 ![1](./images/dratewka1.png) 
 ![2](./images/dratewka2.png) 
